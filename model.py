@@ -18,6 +18,12 @@ class User(Base):
     occupation = Column(String(40), nullable=True)
     zipcode = Column(String(15), nullable=True)
 
+    def info(self):
+        return """ID: %d, EMAIL: %s, PASSWORD: %s, 
+                AGE: %d, GENDER: %s, OCCUPATION: %s, 
+                ZIPCODE: %s""" % (self.id, self.email, self.password, 
+                    self.age, self.gender, self.occupation, self.zipcode)
+
 
 class Movie (Base):
     __tablename__ = "movies"
@@ -26,12 +32,20 @@ class Movie (Base):
     released_at = Column(DateTime, nullable=True)
     imdb_url = Column(String(120), nullable=True)
 
+    def info(self):
+        return """ID: %d, TITLE: %s, RELEASED: %r, URL: %s""" % (self.id, self.name, 
+            self.released_at, self.imdb_url)
+
 class Rating(Base):
     __tablename__ = "ratings"
     id = Column(Integer, primary_key= True)
     movie_id = Column(Integer, nullable = False)
     user_id = Column(Integer, nullable = False)
     rating = Column(Integer(1), nullable = False)
+
+    def info(self):
+        return """ID: %d, MOVIE ID: %d, USER ID: %d, RATING: %d""" % (self.id, 
+            self.movie_id, self.user_id, self.rating)
 
 
 
