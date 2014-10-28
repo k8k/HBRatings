@@ -1,28 +1,39 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship, backref, scoped_session
+from datetime import datetime
+from sqlalchemy import ForeignKey
+
 
 ENGINE = None
 Session = None
+ENGINE = create_engine("sqlite:///ratings.db", echo=False)
+session = scoped_session(sessionmaker(bind=ENGINE, 
+                                    autocommit = False,
+                                    autoflush = False))
+
 Base = declarative_base()
+Base.query = session.query_property()
 
 ### Class declarations go here
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key = True)
-    email = Column(String(64), nullable=True)
+    email = Column(String(64), nullable=True, unique=True)
     password = Column(String(64), nullable=True)
     age = Column(Integer, nullable=True)
     gender = Column(String(1), nullable=True)
     occupation = Column(String(40), nullable=True)
     zipcode = Column(String(15), nullable=True)
 
-    def info(self):
-        return """ID: %d, EMAIL: %s, PASSWORD: %s, 
-                AGE: %d, GENDER: %s, OCCUPATION: %s, 
-                ZIPCODE: %s""" % (self.id, self.email, self.password, 
-                    self.age, self.gender, self.occupation, self.zipcode)
+    def __str__(self):
+        output = "ID: %r, EMAIL: %s, PASSWORD: %r,\n" % (self.id, self.email, 
+            self.password)
+        output += "AGE: %r, GENDER: %s, OCCUPATION: %s,\n" % (self.age, self.gender, 
+            self.occupation)
+        output += "ZIPCODE: %s" % self.zipcode
+        return output
 
 
 class Movie (Base):
@@ -32,33 +43,41 @@ class Movie (Base):
     released_at = Column(DateTime, nullable=True)
     imdb_url = Column(String(120), nullable=True)
 
-    def info(self):
-        return """ID: %d, TITLE: %s, RELEASED: %r, URL: %s""" % (self.id, self.name, 
-            self.released_at, self.imdb_url)
+    def __str__(self):
+        new_date = datetime.strftime(self.released_at, "%d-%b-%Y")
+        output = "ID: %r, TITLE: %s,\n" % (self.id, self.name)
+        output += "RELEASED: %r, URL: %s" % (new_date, self.imdb_url)
+        return output
 
 class Rating(Base):
     __tablename__ = "ratings"
     id = Column(Integer, primary_key= True)
-    movie_id = Column(Integer, nullable = False)
-    user_id = Column(Integer, nullable = False)
+    movie_id = Column(Integer, ForeignKey('movies.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     rating = Column(Integer(1), nullable = False)
 
-    def info(self):
-        return """ID: %d, MOVIE ID: %d, USER ID: %d, RATING: %d""" % (self.id, 
-            self.movie_id, self.user_id, self.rating)
+    movie = relationship("Movie",
+        backref = backref("ratings", order_by=id))
+
+    user = relationship("User",
+        backref = backref("ratings",order_by = id))
+
+    def __str__(self):
+        output = "ID: %r, MOVIE ID: %r,\n" % (self.id, self.movie_id)
+        output += "USER ID: %r, RATING: %r" % (self.user_id, self.rating)
+        return output
 
 
 
 ### End class declarations
 
-def connect():
-    global ENGINE
-    global Session
+# def connect():
+#     global ENGINE
+#     global Session
 
-    ENGINE = create_engine("sqlite:///ratings.db", echo=True)
-    Session = sessionmaker(bind=ENGINE)
 
-    return Session()
+
+#     return Session()
 
 def main():
     """In case we need this for something"""

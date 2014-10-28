@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+  </head>
+    <body>
+        <form id="create-new-user" action="/newuser">
+            <label for="nuser_email">Email: </label>
+            <input type="text" name="nuser_email" /><br>
+            Password:<input type="password" name="nuser_password"><br>
+            Age:<input type="number" min="13" name="nage"><br>
+            Gender:<input type="radio" name="gender" value="M">Male
+            <input type="radio" name="gender" value="F">Female<br>
+            Occupation:<input name="nuser_occupation" type="text"><br>
+            Zipcode:<input type="text" name ="nuser_zip" max="10">
+           <!--  -->
+            <button type="submit" name="newuser_create">Submit</button>
+        </form>
+
+
+        {% for user in user_list %}
+            <h2>User {{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</h2>
+        {% endfor %}
+
+
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="/static/jay.js"></script>
+    </body>
+
+</html>

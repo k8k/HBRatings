@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+  </head>
+    <body>
+        <form id="new-user" action="/checkuser">
+            <label for="user_email">Email: </label>
+            <input type="text" name="user_email" /><br>
+            Password:<input type="password" name="user_password"><br>
+           <!--  -->
+            <button type="submit" name="newuser_submit">Submit</button>
+        </form>
+
+
+        {% for user in user_list %}
+            <h2>User {{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</h2>
+        {% endfor %}
+
+
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="/static/jay.js"></script>
+    </body>
+
+</html>
