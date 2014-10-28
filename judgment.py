@@ -1,76 +1,92 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, g, session as flasksesh
 import model
-from model import session
+from model import session as dbsesh
 import dbfx
 
 app = Flask(__name__)
+app.secret_key = "hgfutrdiuytdr576ryu"
+
+# @app.before_request
+# def get_user_info():
+#     pass
 
 @app.route("/")
 def index():
-    user_list = model.session.query(model.User).limit(5).all()
-
-    return render_template("user_list.html", user_list=user_list)
+    return render_template("base.html")
 
 @app.route("/logon")
 def logon():
-    check_user()
+    # check_user()
+    return render_template("logon.html")
 
 
-
-@app.route("/checkuser")
+@app.route("/logon/userlogin", methods=['POST'])
 def check_user():
-    # u = dbfx.create_new_user()
-    # print u
-
-    email = request.args.get("user_email")
+    email = request.form.get("user_email")
     print email
-    # x = session.query(model.User).filter_by(email=u.email).all()
-    # print x
-    # print u.email
-    # print type(u.email)
-    # return "got here"
 
-    # checks = []
-    check = session.query(model.User).filter_by(email=email).all()
+    check = dbsesh.query(model.User).filter_by(email=email).all()
 
     if len(check)<1:
         return render_template("newuser.html")
     else:
-        return "that user already exists! please try again."
-    print check
-    print type(check)
-    return "hi"
-    # new_user = True
+        email = request.form.get("user_email")
+        dbuser = dbfx.get_user(email)
+        password = request.form.get("user_password")
+        if password != dbuser.password:
+            return "Wrong password, try again"
+        else:
+            flasksesh["email"] = dbuser.email
+            flasksesh["password"] = dbuser.password
+            print flasksesh
+            return render_template("user_home.html", user_email=flasksesh["email"]) 
 
-    # for obj in check:
-    #     if u.email == obj.email:
-    #         new_user = False
-    #     else:
-    #         new_user = True
-    #     return new_user
-    # if new_user == True:
-    #     return "we have a new user"
-    #     redirect("/newuser")
-    # else:
-        # return "email password combo not found"
-
-    # if email != check.email:
-    #     return "Great"
-    # else:
-    #     return "User already exists."
-
-
-
-    # checks.append(check)
 
 @app.route("/newuser")
 def newuser():
-    email = request.args.get("nuser_email")
-    password = request.args.get("nuser_password")
-    new_u = dbfx.create_new_user(email, password)
+    return render_template("newuser.html")
 
-    return new_u.email
-  
+@app.route("/newuser/add", methods=['POST'])
+def create_new_user():
+
+    email = request.form.get("new_user_email")
+
+    check = dbsesh.query(model.User).filter_by(email=email).all()
+
+    if len(check)<1:
+        email = request.form.get("new_user_email")
+        password = request.form.get("new_user_password")
+        age = int(request.form.get("new_user_age"))
+        zipcode = request.form.get("new_user_zipcode")
+        print email, password, age, zipcode
+
+        new_user = dbfx.create_new_user(email, password, age, zipcode)
+
+        flasksesh["email"] = email
+        flasksesh["password"] = password
+        print flasksesh
+        return "Successfully added %s, age %r" % (new_user.email, new_user.age)
+    else:
+        
+        return redirect("/logon")
+
+@app.route("/users/ratings/random")
+def show_random_user_ratings():
+    users = dbfx.show_random_user_ratings()
+
+    print users
+    return "users"
+
+
+
+@app.route("/logout")
+def user_logout():
+    flasksesh = {}
+    print flasksesh
+    return redirect("/")
+
+
+
 
 if __name__ == "__main__":
     app.run(debug = True)

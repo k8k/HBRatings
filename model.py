@@ -19,13 +19,13 @@ Base.query = session.query_property()
 ### Class declarations go here
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key = True)
-    email = Column(String(64), nullable=True, unique=True)
-    password = Column(String(64), nullable=True)
-    age = Column(Integer, nullable=True)
-    gender = Column(String(1), nullable=True)
-    occupation = Column(String(40), nullable=True)
-    zipcode = Column(String(15), nullable=True)
+    id          = Column(Integer, primary_key = True)
+    email       = Column(String(64), nullable=True, unique=True)
+    password    = Column(String(64), nullable=True)
+    age         = Column(Integer, nullable=True)
+    gender      = Column(String(1), nullable=True)
+    occupation  = Column(String(40), nullable=True)
+    zipcode     = Column(String(15), nullable=True)
 
     def __str__(self):
         output = "ID: %r, EMAIL: %s, PASSWORD: %r,\n" % (self.id, self.email, 
