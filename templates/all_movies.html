@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block body %}
+
+
+<div height="200px">test<div>
+<div class="row">
+              <div class="col-md-6">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="text-align:center">Movie Title</th>
+                      <th style="text-align:center">Release Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in range(movie_list|length) %}
+                      
+                    <tr>
+                      <td>{{  movie_list[i].name  }}</a></td>
+                      <td>{{  movie_list[i].released_at }}</a></td>
+                    </tr>
+                      
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+      </div>
+
+
+
+{% endblock %}

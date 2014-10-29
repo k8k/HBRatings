@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block body %}
+
+
+
+
+  <div class="page-header">
+              <h1>{{ movie.name }}</h1>
+            </div>
+<div class="row">
+              <div class="col-md-6">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      
+                
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in range(movie.ratings|length) %}
+                      
+                    <tr>
+                      <td>{{  movie.ratings[i].user_id  }}</a></td>
+                      <td>{{  movie.ratings[i].rating  }}</a></td>
+      
+                    </tr>
+                      
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+      </div>
+
+
+
+{% endblock %}

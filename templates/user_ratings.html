@@ -11,15 +11,15 @@
     <title>judgie wudgie says wedgie</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../../static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
-    <link href="../../static/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="../../../static/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="../../static/css/ratings.css" rel="stylesheet">
+    <link href="../../../static/css/ratings.css" rel="stylesheet">
 
-    <link href="../../static/css/newuser.css" rel="stylesheet">
-    <link href="../../static/css/cover.css" rel="stylesheet">
+    <link href="../../../static/css/newuser.css" rel="stylesheet">
+    <link href="../../../static/css/cover.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -39,7 +39,7 @@
               <h3 class="masthead-brand">{{  user_email  }}</h3>
               <ul class="nav masthead-nav">
                 <li><a href="#">Home</a></li>
-                <li><a href="/movies">Movies</a></li>
+                <li><a href="#">Movies</a></li>
                 <li class="active"><a href="/users/ratings/random">Ratings</a></li>
                 <li><a href="/logout" method='POST'>Log Out</a></li>
               </ul>
@@ -54,18 +54,17 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th style="text-align:center">User ID</th>
                       <th style="text-align:center">Movie Title</th>
                       <th style="text-align:center">Rating</th>
+                    
                     </tr>
                   </thead>
                   <tbody>
-                    {% for i in range(rating_list|length) %}
+                    {% for i in range(user_ratings|length) %}
                       
                     <tr>
-                      <td><a href="/users/{{rating_list[i].user_id}}/ratings/all">{{  rating_list[i].user_id  }}</a></td>
-                      <td><a href="/movies/{{rating_list[i].movie.name}}">{{  rating_list[i].movie.name }}</a></td>
-                      <td>{{  rating_list[i].rating  }}</td>
+                      <td>{{ user_ratings[i].movie.name }}</a></td>
+                      <td>{{  user_ratings[i].rating }}</td>
                     </tr>
                       
                     {% endfor %}

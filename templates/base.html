@@ -44,16 +44,18 @@
               </ul>
             </div>
           </div>
-
+        </div>
+             {% block body %}
           <div class="inner cover">
+         
             <h1 class="cover-heading">Judge me.</h1>
             <p class="lead">movie ratings</p>
             <p class="lead">
               <a href="/logon" class="btn btn-lg btn-default">Sign in</a>
               <a href="/newuser" class="btn btn-lg btn-default">Sign up</a>
             </p>
-          </div>
 
+          </div>
          
 
         </div>
@@ -61,6 +63,8 @@
       </div>
 
     </div>
+              
+          {%  endblock  %}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

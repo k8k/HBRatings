@@ -10,7 +10,19 @@ def get_user(email):
     user = dbsesh.query(model.User).filter_by(email = email).first()
     return user
     
+def get_user_by_id(user_id):
+    """get user record by user id"""
+    user = dbsesh.query(model.User).filter_by(id = user_id).first()
+    return user
 
+def get_movie_by_name(movie_name):
+    movie = dbsesh.query(model.Movie).filter_by(name=movie_name).first()
+    return movie
+
+def show_all_movies():
+    movies = dbsesh.query(model.Movie).all()
+
+    return movies
 
 def create_new_user(email, password, age, zipcode):
     """add a new user to the db"""

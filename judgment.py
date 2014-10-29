@@ -76,45 +76,49 @@ def show_random_user_ratings():
     users = dbfx.show_random_user_ratings()
 
     print users
-
-
-  
+    
     ratings_list = []
-    # print dir(debug.ratings[0])
-    # print dir(debug.ratings[0].movie)
-    # print debug.ratings[0].movie.name
+    
     for i in range(len(users)):
         user = users[i]
         print user
-        
-        rating = random.choice(user.ratings)
-        moviename = rating.movie.name
-        ratings_list.append(rating)
+    
+        try:
+            rating = random.choice(user.ratings)
+            # moviename = rating.movie.name
+            ratings_list.append(rating)
+        except IndexError:
+            continue
     
     print ratings_list
-
-    # movieids = []
-
-    # for i in range(len(debug.ratings)):
-    #     movieid = debug.ratings[i].movie_id
-    #     movieids.append(movieid)
-
-    # print movieids 
-
-    # for i in range(len(movieids)):
-            
-
-        # whatever = movieids[i].movies.name
-        # print whatever
-
-
-    # for user in users:
-    #     for rating in user.ratings:
-    #         print user.ratings.movie_id
 
     return render_template("ratings.html", rating_list=ratings_list)
 
 
+@app.route("/users/<int:user_id>/ratings/all")
+def show_all_ratings_for_user(user_id):
+    user = dbfx.get_user_by_id(user_id)
+    print dir(user)
+
+    user_ratings = user.ratings
+
+    return render_template("user_ratings.html", user_ratings=user_ratings)
+
+
+@app.route("/movies/<movie_name>")
+def movie_detail(movie_name):
+    movie = dbfx.get_movie_by_name(movie_name)
+    print movie.name
+    return render_template("movie_info.html", movie=movie)
+
+    return "ok"
+
+@app.route("/movies")
+def all_movies():
+    
+    movies = dbfx.show_all_movies()
+    print movies
+    return render_template("all_movies.html", movie_list=movies)
 
 @app.route("/logout")
 def user_logout():
