@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, g, session as flask
 import model
 from model import session as dbsesh
 import dbfx
+import random
 
 app = Flask(__name__)
 app.secret_key = "hgfutrdiuytdr576ryu"
@@ -75,7 +76,43 @@ def show_random_user_ratings():
     users = dbfx.show_random_user_ratings()
 
     print users
-    return "users"
+
+
+  
+    ratings_list = []
+    # print dir(debug.ratings[0])
+    # print dir(debug.ratings[0].movie)
+    # print debug.ratings[0].movie.name
+    for i in range(len(users)):
+        user = users[i]
+        print user
+        
+        rating = random.choice(user.ratings)
+        moviename = rating.movie.name
+        ratings_list.append(rating)
+    
+    print ratings_list
+
+    # movieids = []
+
+    # for i in range(len(debug.ratings)):
+    #     movieid = debug.ratings[i].movie_id
+    #     movieids.append(movieid)
+
+    # print movieids 
+
+    # for i in range(len(movieids)):
+            
+
+        # whatever = movieids[i].movies.name
+        # print whatever
+
+
+    # for user in users:
+    #     for rating in user.ratings:
+    #         print user.ratings.movie_id
+
+    return render_template("ratings.html", rating_list=ratings_list)
 
 
 

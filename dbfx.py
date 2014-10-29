@@ -43,18 +43,18 @@ def view_all_users():
 def show_random_user_ratings():
     """return a list of movies and ratings given by this user"""
     our_range = dbsesh.query(model.User.id).all()
-    print our_range
+    # print our_range
 
     clean_list =[]
 
     for i in range(len(our_range)):
         clean_list.append(our_range[i][0])
 
-    print clean_list
+    # print clean_list
 
     users_to_show = []
 
-    for i in range(21):
+    for i in range(10):
         random_user = random.choice(clean_list)
         users_to_show.append(random_user)
 
@@ -63,7 +63,8 @@ def show_random_user_ratings():
         user_object = dbsesh.query(model.User).get(uid)
         user_objects.append(user_object)
 
-    return str(user_objects)
+    print len(user_objects)
+    return (user_objects)
 
      # "in random user function"
 
