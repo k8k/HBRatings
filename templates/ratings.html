@@ -38,7 +38,7 @@
             <div class="inner">
               <h3 class="masthead-brand">{{  user_email  }}</h3>
               <ul class="nav masthead-nav">
-                <li><a href="#">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="/movies">Movies</a></li>
                 <li class="active"><a href="/users/ratings/random">Ratings</a></li>
                 <li><a href="/logout" method='POST'>Log Out</a></li>
@@ -46,6 +46,7 @@
             </div>
           </div>
         </div>
+        {% block body %}
        <div class="page-header">
               <h1>What these random people think about nothing</h1>
             </div>
@@ -73,6 +74,7 @@
                 </table>
               </div>
       </div>
+      {% endblock %}
     </div>
 
   

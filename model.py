@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker, relationship, backref, scoped_session
 from datetime import datetime
 from sqlalchemy import ForeignKey
+from correlation import pearson
 
 
 ENGINE = None
@@ -35,6 +36,40 @@ class User(Base):
         output += "ZIPCODE: %s" % self.zipcode
         return output
 
+    def similarity(self, other):
+        user_ratings = {}
+        paired_ratings = []
+        for rating in self.ratings:
+            user_ratings[rating.movie_id] = rating
+
+        for rating in other.ratings:
+            overlapping_ratings = user_ratings.get(rating.movie_id)
+            if overlapping_ratings:
+                paired_ratings.append( (overlapping_ratings.rating, rating.rating) )
+
+        if paired_ratings:
+            return pearson(paired_ratings)
+        else:
+            return 0.0
+
+    def predict_rating(self, movie):
+        ratings = self.ratings
+        other_ratings = movie.ratings
+        print self.similarity(other_ratings[0].user_id)
+        similarities = [ (self.similarity(r.user), r) \
+            for r in other_ratings ]
+        similarities.sort(reverse = True)
+    
+        if not similarities:
+            return None
+        else:
+            print r.rating
+            print similarities
+
+            numerator = sum([ r.rating * similarity for similarity, r in similarities ])
+            denominator = sum([similarity[0] for similarity in similarities])
+        
+            return numerator/denominator
 
 class Movie (Base):
     __tablename__ = "movies"
@@ -74,6 +109,7 @@ class Rating(Base):
 # def connect():
 #     global ENGINE
 #     global Session
+
 
 
 

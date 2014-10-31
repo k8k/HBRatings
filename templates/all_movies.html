@@ -1,8 +1,9 @@
-{% extends "base.html" %}
+{% extends "ratings.html" %}
 {% block body %}
 
-
-<div height="200px">test<div>
+<div class="page-header" height="400px">
+              <h1>All Movies</h1>
+            </div>
 <div class="row">
               <div class="col-md-6">
                 <table class="table">
@@ -10,14 +11,23 @@
                     <tr>
                       <th style="text-align:center">Movie Title</th>
                       <th style="text-align:center">Release Date</th>
+                      <th style ="text-align:center">blah blah</th>
+
+
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {% for i in range(movie_list|length) %}
                       
                     <tr>
-                      <td>{{  movie_list[i].name  }}</a></td>
-                      <td>{{  movie_list[i].released_at }}</a></td>
+                      <td><a href="/movies/{{movie_list[i].name}}">{{  movie_list[i].name  }}</a></td>
+                      <td>{{  movie_list[i].released_at }}</td>
+                      <td>
+                        
+                                        
+                    </td>
+
                     </tr>
                       
                     {% endfor %}

@@ -19,6 +19,9 @@ def get_movie_by_name(movie_name):
     movie = dbsesh.query(model.Movie).filter_by(name=movie_name).first()
     return movie
 
+def get_movie_by_id(movie_id):
+    movie = dbsesh.query(model.Movie).get(movie_id)
+
 def show_all_movies():
     movies = dbsesh.query(model.Movie).all()
 
@@ -83,9 +86,46 @@ def show_random_user_ratings():
 
 
 
-def add_user_rating():
+def dbadd_user_rating(user, rating, movie):
     """add or update movie rating while logged in"""
-    pass
+
+    # print user
+    # print movie
+
+    user = dbsesh.query(model.User).filter_by(email=user).first()
+    movie = dbsesh.query(model.Movie).filter_by(name=movie).first()
+
+    # print dir(user)
+    # print user.ratings
+    # print movie
+    # reviewed_movies = []
+    # print reviewed_movies
+    # rating = r.rating
+
+    # for i in range(len(user.ratings)):
+    #     reviewed_id = user.ratings[i].movie_id
+    #     reviewed_movies.append(reviewed_id)
+
+    # if movie.id in reviewed_movies:
+
+    # if len(user.ratings)>1:
+    #     for i in range(len(user.ratings)):
+    #         if movie.id == user.ratings[i].movie_id:
+    #             user.ratings[i].rating = rating
+
+    # print "user.ratings----------------------------\n", user.ratings[0].movie_id
+
+    # print "move----------------------------\n", dir(movie)
+
+    r = model.Rating()
+    r.user_id = user.id
+    r.rating = rating
+    r.movie_id = movie.id
+
+    dbsesh.add(r)
+    dbsesh.commit()
+    return r
+
 
 
 

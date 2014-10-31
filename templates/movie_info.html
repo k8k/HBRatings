@@ -1,18 +1,46 @@
-{% extends "base.html" %}
+
+
+{% extends "ratings.html" %}
 {% block body %}
 
 
 
-
+<div class = "container">
   <div class="page-header">
               <h1>{{ movie.name }}</h1>
             </div>
+
+      {% if g.user_email %}
+
+     
+      <form role="form" action="/addrating/{{ movie.name }}" name="movie_rating_form" method="POST">
+        <label for "new_user_rating"> What did you think of <span name="movie_name">{{ movie.name }}?</span><br>
+        {% if prediction %}
+        <h3>We predict you will rate this movie {{prediction}}</h3>
+        {% endif %}
+         Enter your rating here.</label><br>
+
+        <select name="new_user_rating">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        </select>
+        <button type="submit">Judge it</button>
+            
+      </form>
+      {% endif %}
+      <br><br>
+      {{beratement}}
+
 <div class="row">
               <div class="col-md-6">
                 <table class="table">
                   <thead>
                     <tr>
-                      
+                      <th style="text-align:center">User Id</th>
+                      <th style="text-align:center">Rating</th>
                 
                     </tr>
                   </thead>
@@ -20,7 +48,7 @@
                     {% for i in range(movie.ratings|length) %}
                       
                     <tr>
-                      <td>{{  movie.ratings[i].user_id  }}</a></td>
+                      <td><a href="/users/{{  movie.ratings[i].user_id  }}/ratings/all">{{  movie.ratings[i].user_id  }}</a></td>
                       <td>{{  movie.ratings[i].rating  }}</a></td>
       
                     </tr>
@@ -30,7 +58,9 @@
                 </table>
               </div>
       </div>
+      {% endblock %}
+    </div>
 
 
 
-{% endblock %}
+

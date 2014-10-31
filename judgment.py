@@ -1,19 +1,22 @@
 from flask import Flask, render_template, redirect, request, g, session as flasksesh
 import model
-from model import session as dbsesh
+from model import session as dbsesh 
 import dbfx
 import random
 
 app = Flask(__name__)
 app.secret_key = "hgfutrdiuytdr576ryu"
 
-# @app.before_request
-# def get_user_info():
-#     pass
+@app.before_request
+def get_user_info():
+    g.user_email = flasksesh.get("email")
 
 @app.route("/")
 def index():
-    return render_template("base.html")
+    if g.user_email:
+        return redirect("/users/home")
+    else:
+        return render_template("base.html")
 
 @app.route("/logon")
 def logon():
@@ -38,9 +41,13 @@ def check_user():
             return "Wrong password, try again"
         else:
             flasksesh["email"] = dbuser.email
-            flasksesh["password"] = dbuser.password
+            flasksesh["user_id"] = dbuser.id
             print flasksesh
-            return render_template("user_home.html", user_email=flasksesh["email"]) 
+            return redirect("/") 
+
+@app.route("/users/home")
+def user_home():
+    return render_template("user_home.html", user_email=g.user_email)
 
 
 @app.route("/newuser")
@@ -65,8 +72,9 @@ def create_new_user():
 
         flasksesh["email"] = email
         flasksesh["password"] = password
+        flasksesh["user_id"] = new_user.id
         print flasksesh
-        return "Successfully added %s, age %r" % (new_user.email, new_user.age)
+        return redirect("/")
     else:
         
         return redirect("/logon")
@@ -108,26 +116,74 @@ def show_all_ratings_for_user(user_id):
 @app.route("/movies/<movie_name>")
 def movie_detail(movie_name):
     movie = dbfx.get_movie_by_name(movie_name)
-    print movie.name
-    return render_template("movie_info.html", movie=movie)
+    # print movie.name
+    print flasksesh
+    ratings = movie.ratings
+    rating_nums = []
+    user_rating = None
 
-    return "ok"
+    for r in ratings:
+        if r.user_id == flasksesh["user_id"]:
+            user_rating = r
+        rating_nums.append(r.rating)
+    print rating_nums
+    # avg_rating = float(sum(rating_nums))/len(rating_nums)
+    #prediction
+    user = dbsesh.query(model.User).get(flasksesh['user_id'])
+    prediction = None
+    if not user_rating:
+        prediction = user.predict_rating(movie)
+        effective_rating = prediction
+    else:
+        effective_rating = user_rating.rating
+
+    the_eye = dbsesh.query(model.User).filter_by(email="theeye@ofjudgment.com").one()
+    eye_rating = dbsesh.query(model.Rating).filter_by(user_id=the_eye.id, movie_id=movie.id).first()
+
+    if not eye_rating:
+        eye_rating = the_eye.predict_rating(movie)
+    else:
+        eye_rating = eye_rating.rating
+
+    difference = abs(eye_rating - effective_rating)
+
+    messages = [ "I suppose you don't have such bad taste after all.",
+             "I regret every decision that I've ever made that has brought me to listen to your opinion.",
+             "Words fail me, as your taste in movies has clearly failed you.",
+             "That movie is great. For a clown to watch. Idiot.",]
+
+    beratement = messages[int(difference)]
+
+    return render_template("movie_info.html", movie=movie, prediction=prediction, beratement=beratement)
+
 
 @app.route("/movies")
 def all_movies():
     
     movies = dbfx.show_all_movies()
-    print movies
+    # print movies
     return render_template("all_movies.html", movie_list=movies)
+
+
+@app.route("/addrating/<movie_name>", methods=['POST', 'GET'])
+def add_new_user_rating(movie_name):
+    # print movie_name
+    rating = request.form.get("new_user_rating")
+    user_email = g.user_email
+
+    # print movie_name
+    # print user_email
+    # print rating
+
+    new_rating = dbfx.dbadd_user_rating(user_email, str(rating), movie_name)
+    print new_rating
+    return redirect("/movies")
 
 @app.route("/logout")
 def user_logout():
-    flasksesh = {}
+    flasksesh.clear()
     print flasksesh
     return redirect("/")
-
-
-
 
 if __name__ == "__main__":
     app.run(debug = True)
